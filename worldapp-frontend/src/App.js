@@ -11,13 +11,12 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [countries, setCountries] = useState([]);
 
-  // Fetch user and countries on mount
-  useEffect(() => {
-    API.get("/me")
-      .then(res => setCurrentUser(res.data.username))
-      .catch(() => setCurrentUser(null));
-    fetchCountries();
-  }, []);
+useEffect(() => {
+  API.get("/me")
+    .then(res => setCurrentUser(res.data.username))
+    .catch(() => setCurrentUser(null));
+  fetchCountries().catch(() => {});
+}, []);
 
   const fetchCountries = async () => {
     try {
@@ -34,57 +33,61 @@ function App() {
   };
 
   // Add/Edit/Delete handlers for CountriesList
-  const handleAddCountry = async (name, capital, population, area, language, setMsg, resetForm) => {
-    if (!name || !capital || !population || !area || !language) {
-      setMsg("All fields are required");
-      return;
-    }
-    try {
-      await API.post("/countries", {
-        name,
-        capital,
-        population: Number(population),
-        area: Number(area),
-        language,
-      });
+
+const handleAddCountry = (name, capital, population, area, language, setMsg, resetForm) => {
+  if (!name || !capital || !population || !area || !language) {
+    setMsg("All fields are required");
+    return;
+  }
+  API.post("/countries", {
+    name,
+    capital,
+    population: Number(population),
+    area: Number(area),
+    language,
+  })
+    .then(() => {
       setMsg("Country added!");
       resetForm();
-      fetchCountries();
-    } catch (err) {
+      return fetchCountries();
+    })
+    .catch(err => {
       setMsg(err.response?.data?.error || "Error adding country");
-    }
-  };
+    });
+};
 
-  const handleEditCountry = async (id, name, capital, population, area, language, setMsg, closeEdit) => {
-    if (!name || !capital || !population || !area || !language) {
-      setMsg("All fields are required");
-      return;
-    }
-    try {
-      await API.put(`/countries/${id}`, {
-        name,
-        capital,
-        population: Number(population),
-        area: Number(area),
-        language,
-      });
+const handleEditCountry = (id, name, capital, population, area, language, setMsg, closeEdit) => {
+  if (!name || !capital || !population || !area || !language) {
+    setMsg("All fields are required");
+    return;
+  }
+  API.put(`/countries/${id}`, {
+    name,
+    capital,
+    population: Number(population),
+    area: Number(area),
+    language,
+  })
+    .then(() => {
       setMsg("Country updated!");
       closeEdit();
-      fetchCountries();
-    } catch (err) {
+      return fetchCountries();
+    })
+    .catch(err => {
       setMsg(err.response?.data?.error || "Error updating country");
-    }
-  };
+    });
+};
 
-  const handleDeleteCountry = async (id) => {
-    if (!window.confirm("Delete this country?")) return;
-    try {
-      await API.delete(`/countries/${id}`);
-      fetchCountries();
-    } catch (err) {
+const handleDeleteCountry = (id) => {
+  if (!window.confirm("Delete this country?")) return;
+  API.delete(`/countries/${id}`)
+    .then(() => {
+      return fetchCountries();
+    })
+    .catch(err => {
       alert(err.response?.data?.error || "Error deleting country");
-    }
-  };
+    });
+};
 
   return (
     <Router>

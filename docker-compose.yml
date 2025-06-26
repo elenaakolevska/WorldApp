@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   mongo:
     image: mongo:6
@@ -23,7 +22,10 @@ services:
       - mongo
 
   frontend:
-    build: ./worldapp-frontend
+    build:
+      context: ./worldapp-frontend
+      args:
+        REACT_APP_API_URL: http://backend:5000/api
     restart: always
     container_name: frontend
     ports:
