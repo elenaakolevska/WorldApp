@@ -11,16 +11,16 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [countries, setCountries] = useState([]);
 
-useEffect(() => {
-  API.get("/me")
-    .then(res => setCurrentUser(res.data.username))
-    .catch(() => setCurrentUser(null));
-  fetchCountries().catch(() => {});
-}, []);
+  useEffect(() => {
+    API.get("/api/me")
+      .then(res => setCurrentUser(res.data.username))
+      .catch(() => setCurrentUser(null));
+    fetchCountries().catch(() => {});
+  }, []);
 
   const fetchCountries = async () => {
     try {
-      const res = await API.get("/countries");
+      const res = await API.get("/api/countries");
       setCountries(res.data);
     } catch {
       setCountries([]);
@@ -28,66 +28,65 @@ useEffect(() => {
   };
 
   const handleLogout = async () => {
-    await API.post("/logout");
+    await API.post("/api/logout");
     setCurrentUser(null);
   };
 
-  // Add/Edit/Delete handlers for CountriesList
 
-const handleAddCountry = (name, capital, population, area, language, setMsg, resetForm) => {
-  if (!name || !capital || !population || !area || !language) {
-    setMsg("All fields are required");
-    return;
-  }
-  API.post("/countries", {
-    name,
-    capital,
-    population: Number(population),
-    area: Number(area),
-    language,
-  })
-    .then(() => {
-      setMsg("Country added!");
-      resetForm();
-      return fetchCountries();
+  const handleAddCountry = (name, capital, population, area, language, setMsg, resetForm) => {
+    if (!name || !capital || !population || !area || !language) {
+      setMsg("All fields are required");
+      return;
+    }
+    API.post("/api/countries", {
+      name,
+      capital,
+      population: Number(population),
+      area: Number(area),
+      language,
     })
-    .catch(err => {
-      setMsg(err.response?.data?.error || "Error adding country");
-    });
-};
+      .then(() => {
+        setMsg("Country added!");
+        resetForm();
+        return fetchCountries();
+      })
+      .catch(err => {
+        setMsg(err.response?.data?.error || "Error adding country");
+      });
+  };
 
-const handleEditCountry = (id, name, capital, population, area, language, setMsg, closeEdit) => {
-  if (!name || !capital || !population || !area || !language) {
-    setMsg("All fields are required");
-    return;
-  }
-  API.put(`/countries/${id}`, {
-    name,
-    capital,
-    population: Number(population),
-    area: Number(area),
-    language,
-  })
-    .then(() => {
-      setMsg("Country updated!");
-      closeEdit();
-      return fetchCountries();
+  const handleEditCountry = (id, name, capital, population, area, language, setMsg, closeEdit) => {
+    if (!name || !capital || !population || !area || !language) {
+      setMsg("All fields are required");
+      return;
+    }
+    API.put(`/api/countries/${id}`, {
+      name,
+      capital,
+      population: Number(population),
+      area: Number(area),
+      language,
     })
-    .catch(err => {
-      setMsg(err.response?.data?.error || "Error updating country");
-    });
-};
+      .then(() => {
+        setMsg("Country updated!");
+        closeEdit();
+        return fetchCountries();
+      })
+      .catch(err => {
+        setMsg(err.response?.data?.error || "Error updating country");
+      });
+  };
 
-const handleDeleteCountry = (id) => {
-  if (!window.confirm("Delete this country?")) return;
-  API.delete(`/countries/${id}`)
-    .then(() => {
-      return fetchCountries();
-    })
-    .catch(err => {
-      alert(err.response?.data?.error || "Error deleting country");
-    });
-};
+  const handleDeleteCountry = (id) => {
+    if (!window.confirm("Delete this country?")) return;
+    API.delete(`/api/countries/${id}`)
+      .then(() => {
+        return fetchCountries();
+      })
+      .catch(err => {
+        alert(err.response?.data?.error || "Error deleting country");
+      });
+  };
 
   return (
     <Router>
@@ -108,7 +107,7 @@ const handleDeleteCountry = (id) => {
             />
           }
         />
-        {/* Add more routes if needed */}
+
       </Routes>
     </Router>
   );
