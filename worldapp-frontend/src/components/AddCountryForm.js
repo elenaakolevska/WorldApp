@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 
-
 function AddCountryForm({ onAdd }) {
   const [name, setName] = useState("");
   const [capital, setCapital] = useState("");
@@ -11,7 +10,7 @@ function AddCountryForm({ onAdd }) {
   const [message, setMessage] = useState("");
 
   return (
-    <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+    <Paper elevation={2} sx={{ p: 3, mb: 3, borderLeft: "5px solid #2196f3" }}>
       <Typography variant="h6" gutterBottom>Add a Country</Typography>
       <Box
         component="form"
@@ -60,7 +59,9 @@ function AddCountryForm({ onAdd }) {
         <Button type="submit" variant="contained" color="primary">
           Add Country
         </Button>
-        <Typography color="success.main">{message}</Typography>
+        <Typography color={message.startsWith("Country added") ? "success.main" : "error"}>
+          {message}
+        </Typography>
       </Box>
     </Paper>
   );

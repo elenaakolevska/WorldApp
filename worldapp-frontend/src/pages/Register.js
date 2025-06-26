@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, TextField, Button, Typography, Paper, Box } from "@mui/material";
-import API from "../Api";
+import Api from "../api";
 import { useNavigate, Link } from "react-router-dom";
 
 function Register() {
@@ -13,7 +13,7 @@ function Register() {
     e.preventDefault();
     setMsg("");
     try {
-      await API.post("/register", { username, password });
+      await Api.post("/register", { username, password });
       setMsg("Registration successful! You can now login.");
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {

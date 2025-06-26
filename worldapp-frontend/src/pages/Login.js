@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, TextField, Button, Typography, Paper, Box } from "@mui/material";
-import API from "../Api";
+import API from "../api";
 import { useNavigate, Link } from "react-router-dom";
 
 function Login({ setUser }) {
@@ -23,14 +23,20 @@ function Login({ setUser }) {
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h5" align="center" gutterBottom>Login</Typography>
+      <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+        <Typography variant="h5" align="center" gutterBottom fontWeight={700}>
+          Sign in
+        </Typography>
+        <Typography align="center" color="text.secondary" sx={{ mb: 2 }}>
+          Sign in to manage and explore countries.
+        </Typography>
         <Box component="form" onSubmit={handleLogin} display="flex" flexDirection="column" gap={2}>
           <TextField
             label="Username"
             value={username}
             onChange={e => setUsername(e.target.value)}
             required
+            autoFocus
           />
           <TextField
             label="Password"
@@ -42,12 +48,12 @@ function Login({ setUser }) {
           <Button variant="contained" color="primary" type="submit" fullWidth>
             Login
           </Button>
-          <Typography color="error">{msg}</Typography>
+          <Typography color="error" align="center">{msg}</Typography>
         </Box>
         <Box mt={2} textAlign="center">
           <Typography variant="body2">
             Don't have an account?{" "}
-            <Button component={Link} to="/register" size="small">
+            <Button component={Link} to="/register" size="small" color="secondary">
               Register
             </Button>
           </Typography>

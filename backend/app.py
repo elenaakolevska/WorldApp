@@ -8,7 +8,13 @@ import os
 
 load_dotenv()
 app = Flask(__name__)
-app.config["MONGO_URI"] = os.getenv("MONGO_URI")
+
+# Mongo URI build (поддржува .env за cloud или локално)
+mongo_uri = os.getenv("MONGO_URI") or (
+    f"mongodb://{os.getenv('MONGO_USER', 'root')}:{os.getenv('MONGO_PASS', 'example')}"
+    f"@{os.getenv('MONGO_HOST', 'mongo')}:27017/{os.getenv('MONGO_DB', 'worldapp')}?authSource=admin"
+)
+app.config["MONGO_URI"] = mongo_uri
 app.secret_key = os.getenv("SECRET_KEY", "supersecret")
 mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
@@ -19,7 +25,7 @@ def logged_in():
 def current_user():
     return session.get("username")
 
-# ----- User Authentication -----
+# ---------- User Authentication ----------
 @app.route("/api/register", methods=["POST"])
 def api_register():
     data = request.json
@@ -55,7 +61,7 @@ def api_me():
         return jsonify({"username": None})
     return jsonify({"username": current_user()})
 
-# ----- Countries CRUD -----
+# ---------- Countries CRUD ----------
 @app.route("/api/countries", methods=["GET"])
 def api_get_countries():
     countries = list(mongo.db.countries.find())
@@ -84,7 +90,7 @@ def api_add_country():
 def api_get_country(country_id):
     try:
         country = mongo.db.countries.find_one({"_id": ObjectId(country_id)})
-    except:
+    except Exception:
         return jsonify({"error": "Invalid country ID"}), 400
     if not country:
         return jsonify({"error": "Country not found"}), 404
@@ -106,7 +112,7 @@ def api_update_country(country_id):
         return jsonify({"error": "Invalid population or area type"}), 400
     try:
         res = mongo.db.countries.update_one({"_id": ObjectId(country_id)}, {"$set": data})
-    except:
+    except Exception:
         return jsonify({"error": "Invalid country ID"}), 400
     if res.matched_count == 0:
         return jsonify({"error": "Country not found"}), 404
@@ -118,11 +124,11 @@ def api_delete_country(country_id):
         return jsonify({"error": "Unauthorized"}), 401
     try:
         res = mongo.db.countries.delete_one({"_id": ObjectId(country_id)})
-    except:
+    except Exception:
         return jsonify({"error": "Invalid country ID"}), 400
     if res.deleted_count == 0:
         return jsonify({"error": "Country not found"}), 404
     return jsonify({"message": "Country deleted!"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)

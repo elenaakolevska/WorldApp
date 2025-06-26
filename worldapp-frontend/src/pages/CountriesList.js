@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Container, Typography, Box, Button, Card, CardContent, CardActions, TextField, Paper } from "@mui/material";
+import { Container, Typography, Box, Button, Card, CardContent, CardActions, TextField, Paper, Chip } from "@mui/material";
 
 function CountriesList({ countries, user, onAdd, onEdit, onDelete }) {
   const [adding, setAdding] = useState(false);
 
-  // For adding new country
   const [name, setName] = useState("");
   const [capital, setCapital] = useState("");
   const [population, setPopulation] = useState("");
@@ -12,7 +11,6 @@ function CountriesList({ countries, user, onAdd, onEdit, onDelete }) {
   const [language, setLanguage] = useState("");
   const [addMsg, setAddMsg] = useState("");
 
-  // For editing country
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editCapital, setEditCapital] = useState("");
@@ -74,7 +72,9 @@ function CountriesList({ countries, user, onAdd, onEdit, onDelete }) {
   return (
     <Container maxWidth="md" sx={{ mt: 6 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-        <Typography variant="h4">All Countries</Typography>
+        <Typography variant="h4" fontWeight={700}>
+          Countries List
+        </Typography>
         {user && (
           <Button variant="contained" color="success" onClick={() => setAdding(a => !a)}>
             {adding ? "Cancel" : "Add Country"}
@@ -82,7 +82,7 @@ function CountriesList({ countries, user, onAdd, onEdit, onDelete }) {
         )}
       </Box>
       {adding && (
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={2} sx={{ p: 3, mb: 3, borderLeft: "5px solid #2196f3" }}>
           <Typography variant="h6" gutterBottom>Add a Country</Typography>
           <Box component="form" onSubmit={handleAddCountry} display="flex" flexDirection="column" gap={2}>
             <TextField label="Name" value={name} onChange={e => setName(e.target.value)} required />
@@ -98,7 +98,7 @@ function CountriesList({ countries, user, onAdd, onEdit, onDelete }) {
       <Box display="flex" flexWrap="wrap" gap={3}>
         {countries.length === 0 && <Typography>No countries yet.</Typography>}
         {countries.map(country => (
-          <Card key={country._id} sx={{ width: 320, p: 1, position: "relative" }}>
+          <Card key={country._id} sx={{ width: 320, p: 1, position: "relative", borderRadius: 3, borderLeft: "6px solid #1976d2" }}>
             {editId === country._id ? (
               <Box component="form" onSubmit={handleEditCountry} sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
                 <TextField value={editName} onChange={e => setEditName(e.target.value)} label="Name" required />
@@ -114,13 +114,15 @@ function CountriesList({ countries, user, onAdd, onEdit, onDelete }) {
               </Box>
             ) : (
               <>
-                <CardContent>
-                  <Typography variant="h6">{country.name}</Typography>
+                <CardContent sx={{ pb: 0 }}>
+                  <Typography variant="h6" fontWeight={600}>{country.name}</Typography>
+                  <Box display="flex" alignItems="center" gap={1} mt={0.5} mb={1}>
+                    <Chip label={country.language} color="primary" size="small" />
+                    <Chip label={country.capital} color="secondary" size="small" />
+                  </Box>
                   <Typography variant="body2" color="text.secondary">
-                    <b>Capital:</b> {country.capital}<br />
                     <b>Population:</b> {country.population}<br />
-                    <b>Area (km²):</b> {country.area}<br />
-                    <b>Language:</b> {country.language}
+                    <b>Area (km²):</b> {country.area}
                   </Typography>
                 </CardContent>
                 {user && (

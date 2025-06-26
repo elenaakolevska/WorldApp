@@ -5,14 +5,14 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CountriesList from "./pages/CountriesList";
-import API from "./Api";
+import API from "./api";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    API.get("/api/me")
+    API.get("/me")
       .then(res => setCurrentUser(res.data.username))
       .catch(() => setCurrentUser(null));
     fetchCountries().catch(() => {});
@@ -20,7 +20,7 @@ function App() {
 
   const fetchCountries = async () => {
     try {
-      const res = await API.get("/api/countries");
+      const res = await API.get("/countries");
       setCountries(res.data);
     } catch {
       setCountries([]);
@@ -28,17 +28,16 @@ function App() {
   };
 
   const handleLogout = async () => {
-    await API.post("/api/logout");
+    await API.post("/logout");
     setCurrentUser(null);
   };
-
 
   const handleAddCountry = (name, capital, population, area, language, setMsg, resetForm) => {
     if (!name || !capital || !population || !area || !language) {
       setMsg("All fields are required");
       return;
     }
-    API.post("/api/countries", {
+    API.post("/countries", {
       name,
       capital,
       population: Number(population),
@@ -60,7 +59,7 @@ function App() {
       setMsg("All fields are required");
       return;
     }
-    API.put(`/api/countries/${id}`, {
+    API.put(`/countries/${id}`, {
       name,
       capital,
       population: Number(population),
@@ -79,7 +78,7 @@ function App() {
 
   const handleDeleteCountry = (id) => {
     if (!window.confirm("Delete this country?")) return;
-    API.delete(`/api/countries/${id}`)
+    API.delete(`/countries/${id}`)
       .then(() => {
         return fetchCountries();
       })
@@ -107,7 +106,6 @@ function App() {
             />
           }
         />
-
       </Routes>
     </Router>
   );

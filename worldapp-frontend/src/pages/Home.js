@@ -6,11 +6,11 @@ function Home({ user }) {
   return (
     <Container maxWidth="md" sx={{ mt: 6 }}>
       <Box textAlign="center">
-        <Typography variant="h3" gutterBottom>
-          Welcome to CountryManager!
+        <Typography variant="h3" gutterBottom sx={{ fontWeight: 700 }}>
+          🌍 CountryManager
         </Typography>
         <Typography variant="h6" color="text.secondary" paragraph>
-          Discover, add, and manage information about countries of the world.
+          Discover, add, and manage information about countries of the world. Organize your knowledge and explore global diversity!
         </Typography>
         <Box mt={4}>
           <Button
@@ -19,7 +19,7 @@ function Home({ user }) {
             variant="contained"
             color="primary"
             size="large"
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, px: 4 }}
           >
             Browse Countries
           </Button>
@@ -30,6 +30,7 @@ function Home({ user }) {
               variant="outlined"
               color="secondary"
               size="large"
+              sx={{ px: 4 }}
             >
               Get Started
             </Button>

@@ -11,17 +11,15 @@ function Navbar({ user, onLogout }) {
   };
 
   return (
-    <AppBar position="static" color="primary">
+    <AppBar position="static" color="primary" sx={{ mb: 4 }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          <Button color="inherit" component={Link} to="/" sx={{ textTransform: "none", fontWeight: 700 }}>
+          <Button color="inherit" component={Link} to="/" sx={{ textTransform: "none", fontWeight: 700, fontSize: 24 }}>
             CountryManager
           </Button>
         </Typography>
         <Button color="inherit" component={Link} to="/">Home</Button>
         <Button color="inherit" component={Link} to="/countries">Countries</Button>
-        {/* If you have a recipes route, add it here! */}
-        {/* <Button color="inherit" component={Link} to="/recipes">Recipes</Button> */}
         {!user && (
           <>
             <Button color="inherit" component={Link} to="/login">Login</Button>
@@ -29,8 +27,8 @@ function Navbar({ user, onLogout }) {
           </>
         )}
         {user && (
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="body2">Hi, {user}!</Typography>
+          <Box display="flex" alignItems="center" gap={1} ml={2}>
+            <Typography variant="body2" sx={{ color: "#fff" }}>Hi, {user}!</Typography>
             <Button color="inherit" onClick={handleLogout}>Logout</Button>
           </Box>
         )}

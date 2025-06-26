@@ -1,37 +1,33 @@
+version: "3.9"
 services:
   mongo:
     image: mongo:6
+    container_name: worldapp-mongo
     restart: always
-    container_name: mongo
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - mongo-data:/data/db
 
   backend:
     build: ./backend
+    container_name: worldapp-backend
     restart: always
-    container_name: backend
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/worldapp
-      - SECRET_KEY=Aj38!qL@9d8skL1t5z9Qw2eP4xV7bC0
-      - NODE_ENV=production
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     depends_on:
       - mongo
 
   frontend:
-    build:
-      context: ./worldapp-frontend
-      args:
-        REACT_APP_API_URL: http://backend:5000/api
+    build: ./worldapp-frontend
+    container_name: worldapp-frontend
     restart: always
-    container_name: frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
 
 volumes:
-  mongo_data:
+  mongo-data:
