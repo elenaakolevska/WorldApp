@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: worldapp-config
+  namespace: worldapp-ns
+data:
+  NODE_ENV: "production"
+  REACT_APP_API_URL: "http://worldapp-backend:5000/api"

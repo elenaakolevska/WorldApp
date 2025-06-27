@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: worldapp-frontend
+  namespace: worldapp-ns
+spec:
+  selector:
+    app: worldapp-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worldapp-frontend
+  namespace: worldapp-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worldapp-frontend
+  template:
+    metadata:
+      labels:
+        app: worldapp-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: elenaakolevska/worldapp-frontend:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: worldapp-config

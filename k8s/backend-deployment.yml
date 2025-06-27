@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worldapp-backend
+  namespace: worldapp-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worldapp-backend
+  template:
+    metadata:
+      labels:
+        app: worldapp-backend
+    spec:
+      containers:
+        - name: backend
+          image: elenaakolevska/worldapp-backend:latest
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: worldapp-config
+            - secretRef:
+                name: worldapp-secret
