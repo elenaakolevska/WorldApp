@@ -5,7 +5,7 @@ const baseURL =
   (window.location.hostname === "localhost"
     ? "http://localhost:5000/api"
     : "https://worldapp-backend-latest.onrender.com/api");
-
+console.log("API baseURL:", baseURL);
 const API = axios.create({
   baseURL,
   withCredentials: true,
@@ -13,6 +13,6 @@ const API = axios.create({
     "Content-Type": "application/json",
   },
 });
-console.log("API baseURL:", baseURL);
+
 
 export default API;
