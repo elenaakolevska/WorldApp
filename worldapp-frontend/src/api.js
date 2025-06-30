@@ -1,11 +1,9 @@
 import axios from "axios";
 
-const baseURL =
-  process.env.REACT_APP_API_URL ||
-  (window.location.hostname === "localhost"
-    ? "http://localhost:5000/api"
-    : "https://worldapp-backend-latest.onrender.com/api");
+const baseURL = process.env.REACT_APP_API_URL;
+
 console.log("API baseURL:", baseURL);
+
 const API = axios.create({
   baseURL,
   withCredentials: true,
@@ -13,6 +11,5 @@ const API = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 
 export default API;
