@@ -8,7 +8,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-
   backend:
     build: ./backend
     container_name: worldapp-backend
@@ -19,7 +18,6 @@ services:
       - .env
     depends_on:
       - mongo
-
   frontend:
     build: ./worldapp-frontend
     container_name: worldapp-frontend
@@ -28,6 +26,5 @@ services:
       - "3000:80"
     depends_on:
       - backend
-
 volumes:
   mongo-data:
