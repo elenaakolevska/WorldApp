@@ -28,7 +28,6 @@ def logged_in():
 def current_user():
     return session.get("username")
 
-# ---------- User Authentication ----------
 @api.route("/register", methods=["POST"])
 def api_register():
     data = request.json
@@ -64,7 +63,6 @@ def api_me():
         return jsonify({"username": None})
     return jsonify({"username": current_user()})
 
-# ---------- Countries CRUD ----------
 @api.route("/countries", methods=["GET"])
 def api_get_countries():
     countries = list(mongo.db.countries.find())
