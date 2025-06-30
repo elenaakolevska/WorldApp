@@ -1,17 +1,10 @@
 import axios from "axios";
 
-let baseURL = "";
-
-const hostname = window.location.hostname;
-
-if (hostname === "localhost") {
-  baseURL = "http://localhost:5000/api";
-} else if (hostname === "worldapp.local") {
-  baseURL = "/api";
-} else {
-  baseURL = "https://worldapp-backend-latest.onrender.com/api";
-}
-
+const baseURL =
+  process.env.REACT_APP_API_URL ||
+  (window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://worldapp-backend-latest.onrender.com/api");
 const API = axios.create({
   baseURL,
   withCredentials: true,
