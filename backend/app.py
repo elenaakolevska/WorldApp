@@ -9,7 +9,6 @@ import os
 load_dotenv()
 app = Flask(__name__)
 
-# Mongo URI build (поддржува .env за cloud или локално)
 mongo_uri = os.getenv("MONGO_URI") or (
     f"mongodb://{os.getenv('MONGO_USER', 'root')}:{os.getenv('MONGO_PASS', 'example')}"
     f"@{os.getenv('MONGO_HOST', 'mongo')}:27017/{os.getenv('MONGO_DB', 'worldapp')}?authSource=admin"
@@ -19,6 +18,10 @@ app.secret_key = os.getenv("SECRET_KEY", "supersecret")
 mongo = PyMongo(app)
 CORS(app, supports_credentials=True)
 
+from flask import Blueprint
+
+api = Blueprint("api", __name__, url_prefix="/api")
+
 def logged_in():
     return "username" in session
 
@@ -26,7 +29,7 @@ def current_user():
     return session.get("username")
 
 # ---------- User Authentication ----------
-@app.route("/api/register", methods=["POST"])
+@api.route("/register", methods=["POST"])
 def api_register():
     data = request.json
     username = data.get("username")
@@ -39,7 +42,7 @@ def api_register():
     mongo.db.users.insert_one({"username": username, "password": hashed_pw})
     return jsonify({"message": "User registered successfully!"})
 
-@app.route("/api/login", methods=["POST"])
+@api.route("/login", methods=["POST"])
 def api_login():
     data = request.json
     username = data.get("username")
@@ -50,26 +53,26 @@ def api_login():
         return jsonify({"message": "Logged in!", "username": username})
     return jsonify({"error": "Invalid credentials!"}), 401
 
-@app.route("/api/logout", methods=["POST"])
+@api.route("/logout", methods=["POST"])
 def api_logout():
     session.pop("username", None)
     return jsonify({"message": "Logged out!"})
 
-@app.route("/api/me", methods=["GET"])
+@api.route("/me", methods=["GET"])
 def api_me():
     if not logged_in():
         return jsonify({"username": None})
     return jsonify({"username": current_user()})
 
 # ---------- Countries CRUD ----------
-@app.route("/api/countries", methods=["GET"])
+@api.route("/countries", methods=["GET"])
 def api_get_countries():
     countries = list(mongo.db.countries.find())
     for c in countries:
         c["_id"] = str(c["_id"])
     return jsonify(countries)
 
-@app.route("/api/countries", methods=["POST"])
+@api.route("/countries", methods=["POST"])
 def api_add_country():
     if not logged_in():
         return jsonify({"error": "Unauthorized"}), 401
@@ -86,7 +89,7 @@ def api_add_country():
     data["_id"] = str(res.inserted_id)
     return jsonify(data), 201
 
-@app.route("/api/countries/<country_id>", methods=["GET"])
+@api.route("/countries/<country_id>", methods=["GET"])
 def api_get_country(country_id):
     try:
         country = mongo.db.countries.find_one({"_id": ObjectId(country_id)})
@@ -97,7 +100,7 @@ def api_get_country(country_id):
     country["_id"] = str(country["_id"])
     return jsonify(country)
 
-@app.route("/api/countries/<country_id>", methods=["PUT"])
+@api.route("/countries/<country_id>", methods=["PUT"])
 def api_update_country(country_id):
     if not logged_in():
         return jsonify({"error": "Unauthorized"}), 401
@@ -118,7 +121,7 @@ def api_update_country(country_id):
         return jsonify({"error": "Country not found"}), 404
     return jsonify({"message": "Country updated!"})
 
-@app.route("/api/countries/<country_id>", methods=["DELETE"])
+@api.route("/countries/<country_id>", methods=["DELETE"])
 def api_delete_country(country_id):
     if not logged_in():
         return jsonify({"error": "Unauthorized"}), 401
@@ -129,6 +132,8 @@ def api_delete_country(country_id):
     if res.deleted_count == 0:
         return jsonify({"error": "Country not found"}), 404
     return jsonify({"message": "Country deleted!"})
+
+app.register_blueprint(api)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)
