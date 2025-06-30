@@ -16,7 +16,19 @@ mongo_uri = os.getenv("MONGO_URI") or (
 app.config["MONGO_URI"] = mongo_uri
 app.secret_key = os.getenv("SECRET_KEY", "supersecret")
 mongo = PyMongo(app)
-CORS(app, supports_credentials=True)
+from flask_cors import CORS
+
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[
+        "http://localhost:3000",
+        "http://localhost",
+        "http://worldapp.local",
+        "https://worldapp-frontend-latest.onrender.com",
+        "https://worldapp-backend-latest.onrender.com",
+    ]
+)
 
 from flask import Blueprint
 
