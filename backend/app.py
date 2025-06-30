@@ -27,8 +27,10 @@ CORS(
         "http://worldapp.local",
         "https://worldapp-frontend-latest.onrender.com",
         "https://worldapp-backend-latest.onrender.com",
+        "https://world-app-teal.vercel.app"
     ]
 )
+
 
 from flask import Blueprint
 
